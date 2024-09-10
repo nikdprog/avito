@@ -1,4 +1,4 @@
-package io.codefresh.gradleexample.service;
+package io.codefresh.gradleexample.controller;
 
 
 import org.springframework.http.ResponseEntity;

@@ -27,5 +27,8 @@ public class Employee {
     @Column(name = "updated_at")
     private Timestamp updated_at;
 
-
+    public String getUsername() {return username;}
+    public Long getId() {
+        return id;
+    }
 }

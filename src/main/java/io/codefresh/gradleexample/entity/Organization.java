@@ -19,6 +19,7 @@ public class Organization {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private organization_type type;
 
@@ -28,4 +29,5 @@ public class Organization {
     @Column(name = "updated_at")
     private Timestamp updated_at;
 
+    public String getName() {return name;}
 }

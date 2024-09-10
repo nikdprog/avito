@@ -9,12 +9,12 @@ public class Organization_responsible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
 
-    @ManyToMany
-    @JoinColumn(name = "employee_id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private Employee employee;
 
 }
