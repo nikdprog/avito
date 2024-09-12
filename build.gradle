@@ -1,9 +1,9 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.4.RELEASE'
+
+	id 'org.springframework.boot' version '2.1.18.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
-
-apply plugin: 'io.spring.dependency-management'
 
 group = 'io.codefresh'
 version = '0.0.1-SNAPSHOT'
@@ -15,20 +15,18 @@ repositories {
 
 dependencies {
 
-
-	implementation 'org.hibernate:hibernate-core:5.4.0.Final'
-	implementation 'org.graalvm.sdk:graal-sdk:21.1.0'
-	implementation 'org.graalvm.compiler:compiler:21.1.0'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-55:3.3.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.hibernate:hibernate-core:5.4.30.Final'
 	implementation 'org.postgresql:postgresql:42.5.0'
 	implementation 'javax.persistence:javax.persistence-api:2.2'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
-    useJUnit()
-
-    maxHeapSize = '1G'
+	useJUnitPlatform()
+	maxHeapSize = '1G'
 }

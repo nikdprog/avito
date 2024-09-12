@@ -1,6 +1,7 @@
 package io.codefresh.gradleexample.repository;
 
 import io.codefresh.gradleexample.entity.Tender;
+import io.codefresh.gradleexample.entity.enums.service_type;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +13,11 @@ import java.util.UUID;
 public interface TenderRepository extends JpaRepository<Tender, UUID> {
 
     // Метод для фильтрации по типу услуг
-    List<Tender> findByServiceType(String serviceType);
+    List<Tender> findByServiceType(service_type serviceType);
     List<Tender> findAll();
     Optional<Tender> findById(UUID id);
-    //save(Tender tender);
+    Optional<Tender> findByOrganizationId(UUID id);
+
+    @Override
+    <S extends Tender> S save(S entity);
 }

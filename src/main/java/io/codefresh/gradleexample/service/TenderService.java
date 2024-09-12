@@ -1,10 +1,13 @@
 package io.codefresh.gradleexample.service;
 
 import io.codefresh.gradleexample.entity.Employee;
-import io.codefresh.gradleexample.entity.Organization;
+import io.codefresh.gradleexample.entity.Organization_responsible;
 import io.codefresh.gradleexample.entity.Tender;
+import io.codefresh.gradleexample.entity.enums.service_type;
+import io.codefresh.gradleexample.entity.enums.tender_status;
 import io.codefresh.gradleexample.repository.EmployeeRepository;
 import io.codefresh.gradleexample.repository.OrganizationRepository;
+import io.codefresh.gradleexample.repository.OrganizationResponsibleRepository;
 import io.codefresh.gradleexample.repository.TenderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -24,16 +27,19 @@ public class TenderService {
     private final TenderRepository tenderRepository;
     private final OrganizationRepository organizationRepository;
     private final EmployeeRepository employeeRepository;
+    private final OrganizationResponsibleRepository organizationResponsibleRepository;
 
     @Autowired
-    public TenderService(TenderRepository tenderRepository, OrganizationRepository organizationRepository, EmployeeRepository employeeRepository) {
+    public TenderService(TenderRepository tenderRepository, OrganizationRepository organizationRepository,
+                         EmployeeRepository employeeRepository, OrganizationResponsibleRepository organizationResponsibleRepository) {
         this.tenderRepository = tenderRepository;
         this.organizationRepository = organizationRepository;
         this.employeeRepository = employeeRepository;
+        this.organizationResponsibleRepository = organizationResponsibleRepository;
     }
 
-    public List<Tender> getAllTenders(String serviceType) throws SQLException {
-        if (serviceType != null && !serviceType.isEmpty()) {
+    public List<Tender> getAllTenders(service_type serviceType) throws SQLException {
+        if (serviceType != null) {
             return tenderRepository.findByServiceType(serviceType);
         } else {
         logDatabaseConnection();
@@ -41,37 +47,40 @@ public class TenderService {
         }
     }
 
-    public Optional<Tender> getTendersCurrentUser(String username) {
+    public Optional<Tender> getTendersCurrentUser(String username) throws Exception {
         Optional<Employee> user = employeeRepository.findByUsername(username);
-
-        //List<Tender> lst = new ArrayList<>();
-
         Employee employee = user.get();
         UUID idUsername = employee.getId();
-        Optional<Tender> tendersCurrentUser = tenderRepository.findById(idUsername);
-
-        return tenderRepository.findById(idUsername);
+        Organization_responsible currentUser = organizationResponsibleRepository.findByEmployee_id(idUsername)
+                .orElseThrow(() -> new Exception("Organization responsible not found"));
+        UUID idOrganization = currentUser.getOrganization().getId();
+        Optional<Tender> tendersCurrentUser = tenderRepository.findByOrganizationId(idOrganization);
+        return tendersCurrentUser;
     }
 
-    public Tender createTender(String name, String description, String serviceType, String status, Long organizationId, String creatorUsername) throws Exception {
-        Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new Exception("Organization not found"));
+    public Tender createTender(String name, String description, service_type serviceType, tender_status status, UUID organizationId, String creatorUsername) throws Exception {
+        // проверяем по имени, является ли пользователь ответственным за организацию
+        Optional<Employee> employee = employeeRepository.findByUsername(creatorUsername);
+        Employee user = employee.get();
+        Optional<Organization_responsible> organization_responsible = Optional.ofNullable(organizationResponsibleRepository.findByEmployee_id(user.getId())
+                .orElseThrow(() -> new Exception("Organization not found")));
+        if(organization_responsible.get().getOrganization().getId().equals(organizationId)) {
 
-        Employee creator = employeeRepository.findByUsername(creatorUsername)
-                .orElseThrow(() -> new Exception("User not found"));
-
-        Tender tender = new Tender();
-        tender.setName(name);
-        tender.setDescription(description);
-        tender.setServiceType(serviceType);
-        tender.setStatus(status);
-        tender.setOrganization(organization);
-
-        tender.setCreatedAt(LocalDateTime.now());
-        //tender.setUpdatedAt(LocalDateTime.now());
-
-        return tenderRepository.save(tender);
+            Tender tender = new Tender();
+            tender.setName(name);
+            tender.setDescription(description);
+            tender.setServiceType(serviceType);
+            tender.setStatus(status);
+            tender.setOrganization(organization_responsible.get().getOrganization());
+            tender.setVersion(1);
+            tender.setCreatedAt(LocalDateTime.now());
+            return tenderRepository.save(tender);
+        }
+        else return null;
+        // доделать
     }
+
+
     @Autowired
     private DataSource dataSource;
 
@@ -79,10 +88,14 @@ public class TenderService {
     public void logDatabaseConnection() throws SQLException {
         System.out.println("Connected to: " + dataSource.getConnection().getMetaData().getURL());
     }
+
     public Optional<Tender> getTendersById(UUID id) {
         return tenderRepository.findById(id);
     }
 
+    public Optional<Employee> getEmployeeByUsername(String username) {
+        return employeeRepository.findByUsername(username);
+    }
     public void saveTender(Tender tender) {
         tenderRepository.save(tender);
     }

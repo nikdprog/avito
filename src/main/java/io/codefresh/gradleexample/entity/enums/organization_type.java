@@ -5,5 +5,5 @@ public enum organization_type {
     LLC,
     JSC;
 
-     organization_type() {}
+    organization_type() {}
 }
