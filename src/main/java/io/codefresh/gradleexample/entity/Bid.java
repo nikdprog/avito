@@ -2,42 +2,42 @@ package io.codefresh.gradleexample.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(name = "bid")
 public class Bid {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "bidId")
+    private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "tender_id")
-    private Tender tender;
-
-    @Column(name = "name")
+    @Column(name = "bidName")
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "bidDescription")
     private String description;
 
-    @Column(name = "status")
+    @Column(name = "bidStatus")
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "organization_id")
-    private Organization organization;
+    @JoinColumn(name = "tenderId")
+    private Tender tender;
+
+    @Column(name = "bidAuthorType")
+    private String author_type;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee creator;
+    @JoinColumn(name = "bidAuthorId")
+    private Employee author;
+
+    @Column(name = "bidVersion")
+    private int version;
 
     @Column(name = "created_at")
     private Timestamp created_at;
 
-    @Column(name = "updated_at")
-    private Timestamp updated_at;
 
-    @Column(name = "version")
-    private int version;
 
 }

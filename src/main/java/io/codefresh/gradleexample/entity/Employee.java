@@ -3,14 +3,15 @@ package io.codefresh.gradleexample.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(name = "employee")
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(name = "username")
     private String username;
@@ -28,7 +29,5 @@ public class Employee {
     private Timestamp updated_at;
 
     public String getUsername() {return username;}
-    public Long getId() {
-        return id;
-    }
+    public UUID getId() {return id;}
 }

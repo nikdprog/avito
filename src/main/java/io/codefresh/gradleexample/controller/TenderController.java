@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class TenderController {
@@ -22,7 +24,7 @@ public class TenderController {
 
     @GetMapping("/api/tenders")
     public ResponseEntity<List<Tender>> getTenders(
-            @RequestParam(required = false) String serviceType) {
+            @RequestParam(required = false) String serviceType) throws SQLException {
         List<Tender> tenders = tenderService.getAllTenders(serviceType);
         return ResponseEntity.ok(tenders);
     }
@@ -46,8 +48,8 @@ public class TenderController {
     }
 
     @RequestMapping("api/tenders/{tenderId}/edit")
-    public ResponseEntity<Tender> editTender(@PathVariable Long tenderId, @RequestParam(required = false) String name,
-                                                       @RequestParam(required = false) String description) {
+    public ResponseEntity<Tender> editTender(@PathVariable UUID tenderId, @RequestParam(required = false) String name,
+                                             @RequestParam(required = false) String description) {
         Optional<Tender> tender = tenderService.getTendersById(tenderId);
         Tender tenderUpdate = tender.get();
         if(name != null) {

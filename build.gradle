@@ -14,7 +14,9 @@ repositories {
 }
 
 dependencies {
-	compile  'org.hibernate:hibernate-core:5.4.0.Final'
+
+
+	implementation 'org.hibernate:hibernate-core:5.4.0.Final'
 	implementation 'org.graalvm.sdk:graal-sdk:21.1.0'
 	implementation 'org.graalvm.compiler:compiler:21.1.0'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'

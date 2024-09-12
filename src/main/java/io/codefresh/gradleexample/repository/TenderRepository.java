@@ -6,13 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface TenderRepository extends JpaRepository<Tender, Long> {
+public interface TenderRepository extends JpaRepository<Tender, UUID> {
 
     // Метод для фильтрации по типу услуг
     List<Tender> findByServiceType(String serviceType);
     List<Tender> findAll();
-    Optional<Tender> findById(Long id);
+    Optional<Tender> findById(UUID id);
     //save(Tender tender);
 }

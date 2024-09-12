@@ -1,14 +1,53 @@
 package io.codefresh.gradleexample.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tender")
 public class Tender {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "tenderId")
+    private UUID id;
+
+    @Column(name = "tenderName")
+    private String name;
+
+    @Column(name = "tenderDescription")
+    private String description;
+
+    @Column(name = "tenderStatus")
+    private String status;
+
+    @Column(name = "tenderServiceType")
+    private String serviceType;
+
+    @ManyToOne
+    @JoinColumn(name = "organizationId")
+    private Organization organization;
+
+    @Column(name = "tenderVersion")
+    private int version;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+
+    public UUID getId() {
+        return id;
+    }
+
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -26,12 +65,11 @@ public class Tender {
         this.organization = organization;
     }
 
-    public void setCreator(Employee creator) {
-        this.creator = creator;
-    }
 
-    @Column(name = "name")
-    private String name;
+
+
+
+
 
     public void setDescription(String description) {
         this.description = description;
@@ -41,12 +79,9 @@ public class Tender {
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
-    @Column(name = "description")
-    private String description;
+
+
 
 
     public String getDescription() {
@@ -64,31 +99,15 @@ public class Tender {
         return organization;
     }
 
-    public Employee getCreator() {
-        return creator;
-    }
+
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 
-    @Column(name = "status")
-    private String status; // CREATED, PUBLISHED, CLOSED
 
-    @Column(name = "service_type")
-    private String serviceType;
 
-    @ManyToOne
-    @JoinColumn(name = "organization_id")
-    private Organization organization;
-
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
-    private Employee creator;
 
     public int getVersion() {
         return version;
@@ -98,30 +117,7 @@ public class Tender {
         this.version = version;
     }
 
-    @Column(name = "version")
-    private int version;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    /*
-    @Override
-    public String toString() {
-        return "Tender{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", serviceType='" + serviceType + '\'' +
-                ", organization=" + organization.getName() +
-                ", creator=" + creator.getUsername() +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
-    */
-    public Long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

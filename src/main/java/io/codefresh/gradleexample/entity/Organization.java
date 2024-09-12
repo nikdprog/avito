@@ -4,14 +4,15 @@ import javax.persistence.*;
 import io.codefresh.gradleexample.entity.enums.organization_type;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(name = "organization")
 public class Organization {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(name = "name")
     private String name;
