@@ -1,6 +1,7 @@
 package io.codefresh.gradleexample.controller;
 
 import io.codefresh.gradleexample.entity.Employee;
+import io.codefresh.gradleexample.entity.ErrorResponse;
 import io.codefresh.gradleexample.entity.Tender;
 import io.codefresh.gradleexample.entity.enums.*;
 import io.codefresh.gradleexample.repository.EmployeeRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,10 +29,25 @@ public class TenderController {
     }
 
     @GetMapping("/api/tenders")
-    public ResponseEntity<List<Tender>> getTenders(
-            @RequestParam(required = false) service_type serviceType) throws SQLException {
-        List<Tender> tenders = tenderService.getAllTenders(serviceType);
+    public ResponseEntity<?> getTenders(
+            @RequestParam service_type serviceType) throws SQLException {
+        List<Tender> tenders;
+        // доделать
+        try {
+            tenders = tenderService.getAllTenders(serviceType);
+        } catch (IllegalArgumentException e) {
+            // Если неверный тип сервиса (service_type) или другой формат запроса
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonList(
+                    new ErrorResponse("Invalid service_type or request format")
+            ));
+        }
         return ResponseEntity.ok(tenders);
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ErrorResponse> handleSQLException(SQLException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("Database connection error"));
     }
 
     @Transactional

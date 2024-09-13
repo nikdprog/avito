@@ -65,18 +65,6 @@ public class TenderDTO {
 
     private Long organizationId;
     private String creatorUsername;
-    /*
-    public TenderDTO(Long id, String name, String description, String status, String serviceType, Organization organization, Employee employee) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.serviceType = serviceType;
-        this.organization = organization;
-        this.creator = employee;
 
-    }\
-
-     */
 
 }
